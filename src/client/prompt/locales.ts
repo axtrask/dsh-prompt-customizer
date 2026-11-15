@@ -1,4 +1,6 @@
 /** Locale dictionaries for the prompt-customizer panel. */
+import { RU } from './locales.ru.ts'
+
 export const DICT = {
   zh: {
     nav: '提示词定制',
@@ -370,6 +372,7 @@ export const DICT = {
     sourceWorkspace: 'Workspace',
     sourceUnknown: 'Source unknown',
   },
+  ru: RU,
 } as const
 
 export type Translate = (key: string, params?: Record<string, string | number>) => string

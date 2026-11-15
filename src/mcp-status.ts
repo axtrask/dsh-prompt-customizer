@@ -353,10 +353,10 @@ function mergeWorkspaceMcpJson(path: string, rows: readonly { id: string; name: 
       try {
         parsed = JSON.parse(raw) as unknown
       } catch (error) {
-        throw new Error(`${path} 不是合法 JSON（${error instanceof Error ? error.message : String(error)}），请先修好再添加`)
+        throw new Error(`${path}: недопустимый JSON (${error instanceof Error ? error.message : String(error)}), сначала исправьте файл, затем добавляйте`)
       }
       if (parsed === null || typeof parsed !== 'object' || Array.isArray(parsed)) {
-        throw new Error(`${path} 顶层不是对象，请先修好再添加`)
+        throw new Error(`${path}: верхний уровень не является объектом, сначала исправьте файл, затем добавляйте`)
       }
       document = { ...parsed as Record<string, unknown> }
     }
@@ -1171,14 +1171,14 @@ export async function applyMcpStatus(ctx: Context): Promise<void> {
               return
             }
             if (outcome.rows.length === 0) {
-              writeJsonResponse(res, 400, { ok: false, error: '未解析出任何 MCP server' })
+              writeJsonResponse(res, 400, { ok: false, error: 'Не удалось разобрать ни одного MCP server' })
               return
             }
             const scope = parsed.scope === 'workspace' ? 'workspace' : 'global'
             const workspace = typeof parsed.workspace === 'string' ? parsed.workspace.trim() : ''
             if (scope === 'workspace') {
               if (workspace === '') {
-                writeJsonResponse(res, 400, { ok: false, error: 'scope=workspace 需要 workspace 路径' })
+                writeJsonResponse(res, 400, { ok: false, error: 'scope=workspace требует путь к workspace' })
                 return
               }
               const targetPath = join(workspace, '.mcp.json')

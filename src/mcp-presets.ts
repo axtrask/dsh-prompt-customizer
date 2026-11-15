@@ -388,7 +388,7 @@ async function handle(ctx: PluginContext, req: IncomingMessage, res: ServerRespo
         writeJsonResponse(res, 404, {
           ok: false,
           error: 'preset-not-found',
-          hint: `预设 "${presetId}" 不在 agentPresets 名单里（或没有可读的声明）`,
+          hint: `Пресет «${presetId}» отсутствует в списке agentPresets (или для него нет читаемого объявления)`,
         })
         return
       }
@@ -396,7 +396,7 @@ async function handle(ctx: PluginContext, req: IncomingMessage, res: ServerRespo
         writeJsonResponse(res, 409, {
           ok: false,
           error: 'preset-not-editable',
-          hint: '当前组合没有 configEditor / 该预设行 id 不唯一，无法写回 profile patch',
+          hint: 'В текущей композиции нет configEditor / id строки пресета не уникален — не удаётся записать обратно в profile patch',
         })
         return
       }
@@ -417,7 +417,7 @@ async function handle(ctx: PluginContext, req: IncomingMessage, res: ServerRespo
         return
       }
       if (outcome.rows.length === 0) {
-        writeJsonResponse(res, 400, { ok: false, error: '未解析出任何 MCP server' })
+        writeJsonResponse(res, 400, { ok: false, error: 'Не удалось разобрать ни одного MCP server' })
         return
       }
       const plugins = ref.config.plugins
@@ -464,7 +464,7 @@ async function handle(ctx: PluginContext, req: IncomingMessage, res: ServerRespo
         writeJsonResponse(res, 409, {
           ok: false,
           error: 'preset-not-editable',
-          hint: '当前组合没有 configEditor / 该预设行 id 不唯一，无法写回 profile patch',
+          hint: 'В текущей композиции нет configEditor / id строки пресета не уникален — не удаётся записать обратно в profile patch',
         })
         return
       }

@@ -621,7 +621,7 @@ async function handle(ctx: PluginContext, req: IncomingMessage, res: ServerRespo
       if (vetoed.length > 0) {
         writeJsonResponse(res, 409, {
           ok: false,
-          error: `tool disabled in the "全部 Agent" scope: ${vetoed.join(', ')} — enable it there first`,
+          error: `Инструмент отключён в области «Все агенты»: ${vetoed.join(', ')} — сначала включите его там`,
           serverName,
           preset: presetId,
           source: owner,

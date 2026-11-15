@@ -41,7 +41,7 @@ function SkillsEntry(): JSX.Element {
             <path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z" />
           </svg>
         )}
-        label="能力"
+        label="Возможности"
         rail={rail}
         expanded={open}
         onClick={e => {
@@ -51,7 +51,7 @@ function SkillsEntry(): JSX.Element {
         }}
       />
       {open && (
-        <ErrorBoundary label="技能面板" fallback={null} onError={requestClose}>
+        <ErrorBoundary label="Панель скиллов" fallback={null} onError={requestClose}>
           <SkillsPanel closing={closing} onClose={requestClose} anchor={anchor} />
         </ErrorBoundary>
       )}

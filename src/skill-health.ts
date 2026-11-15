@@ -105,7 +105,7 @@ async function scanRoot(root: string, nameSet: Set<string>): Promise<{ healthy: 
         level: 'error',
         code: 'missing-skill-md',
         skill: entry.name,
-        message: `目录「${entry.name}」缺少 ${SKILL_FILE}，技能面板不会显示它`,
+        message: `В каталоге «${entry.name}» отсутствует ${SKILL_FILE} — панель скиллов его не покажет`,
       })
       continue
     }
@@ -116,7 +116,7 @@ async function scanRoot(root: string, nameSet: Set<string>): Promise<{ healthy: 
         level: 'error',
         code: 'bad-frontmatter',
         skill: entry.name,
-        message: `「${entry.name}」的 ${SKILL_FILE} 缺少有效的 name 字段`,
+        message: `В ${SKILL_FILE} для «${entry.name}» отсутствует допустимое поле name`,
       })
       continue
     }
@@ -126,7 +126,7 @@ async function scanRoot(root: string, nameSet: Set<string>): Promise<{ healthy: 
         level: 'warn',
         code: 'name-mismatch',
         skill: entry.name,
-        message: `目录「${entry.name}」与 frontmatter name「${fmName}」不一致，打开技能文件可能 404`,
+        message: `Имя каталога «${entry.name}» не совпадает с frontmatter name «${fmName}» — при открытии файла скилла возможен 404`,
       })
     }
     healthy += 1
@@ -168,7 +168,7 @@ export async function healthCheck(ctx?: Context): Promise<HealthReport> {
           code: 'dangling-bundle',
           skill: skillName,
           bundle: record.name,
-          message: `Bundle「${record.name}」引用了不存在的技能「${skillName}」`,
+          message: `Bundle «${record.name}» ссылается на несуществующий скилл «${skillName}»`,
         })
       }
     }

@@ -38,11 +38,11 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
   override componentDidCatch(error: Error, info: ErrorInfo): void {
     // 打出组件栈：没有它，崩溃只会表现为「界面少了一块」，无从下手。
-    console.error(`[dsh-prompt-customizer] ${this.props.label} 渲染崩溃：`, error, info.componentStack ?? '')
+    console.error(`[dsh-prompt-customizer] ${this.props.label} — сбой рендеринга:`, error, info.componentStack ?? '')
     try {
       this.props.onError?.(error)
     } catch (callbackError) {
-      console.error('[dsh-prompt-customizer] 错误边界回调失败：', callbackError)
+      console.error('[dsh-prompt-customizer] сбой обратного вызова error boundary:', callbackError)
     }
   }
 

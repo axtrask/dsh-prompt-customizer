@@ -258,7 +258,7 @@ function installAgentRestrictions(ctx: PluginContext): () => void {
           dispose: () => { for (const dispose of disposers) { try { dispose() } catch { /* 已释放 */ } } },
         })
       } else {
-        ctx.logger?.warn?.(`[mcp-workspace-scope] restrict 拒绝全部工作区 deny：${error instanceof Error ? error.message : String(error)}`)
+        ctx.logger?.warn?.(`[mcp-workspace-scope] restrict отклонил весь список deny рабочей области: ${error instanceof Error ? error.message : String(error)}`)
       }
     }
   }
@@ -627,7 +627,7 @@ function installWorkspaceMounts(ctx: PluginContext): void {
   mountContext = ctx
   const sync = (agent: any): void => {
     void syncAgentWorkspace(ctx, agent).catch((error) => {
-      ctx.logger?.warn?.(`[mcp-workspace-scope] 工作区 MCP 挂载失败: ${error instanceof Error ? error.message : String(error)}`)
+      ctx.logger?.warn?.(`[mcp-workspace-scope] сбой монтирования MCP рабочей области: ${error instanceof Error ? error.message : String(error)}`)
     })
   }
   ctx.effect(() => {

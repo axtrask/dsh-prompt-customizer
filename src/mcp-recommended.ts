@@ -184,13 +184,13 @@ async function resolveServer(repoUrl: string): Promise<ResolvedServer> {
 /** 按描述关键词粗分类（未命中 → 精选）。 */
 function categorize(description: string): string {
   const text = description.toLowerCase()
-  if (/file|filesystem|文件|目录/.test(text)) return '文件'
-  if (/search|搜索|browser|网页|web\s/.test(text)) return '搜索'
-  if (/git|github|code|repo|repo|代码|开发/.test(text)) return '开发'
-  if (/db|database|sql|postgres|mysql|mongo|数据/.test(text)) return '数据'
-  if (/slack|teams|notion|calendar|mail|协作|会议|通知/.test(text)) return '协作'
-  if (/cloud|aws|gcp|azure|云/.test(text)) return '云'
-  return '精选'
+  if (/file|filesystem|文件|目录/.test(text)) return 'Файлы'
+  if (/search|搜索|browser|网页|web\s/.test(text)) return 'Поиск'
+  if (/git|github|code|repo|repo|代码|开发/.test(text)) return 'Разработка'
+  if (/db|database|sql|postgres|mysql|mongo|数据/.test(text)) return 'Данные'
+  if (/slack|teams|notion|calendar|mail|协作|会议|通知/.test(text)) return 'Совместная работа'
+  if (/cloud|aws|gcp|azure|云/.test(text)) return 'Облако'
+  return 'Подборка'
 }
 
 /** 取 Markdown 链接/加粗符号内的文本。 */

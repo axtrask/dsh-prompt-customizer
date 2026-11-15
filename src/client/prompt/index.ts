@@ -9,24 +9,27 @@
  */
 import type { Context as ClientContext } from '@deepseek-ai/cordis'
 import { DICT, type Translate } from './locales.ts'
+import { RU } from './locales.ru.ts'
 
 /** 文案命名空间（与上游一致，避免两份字典）。 */
 const NS = 'prompt-customizer'
 
 /** triad 客户端上下文里本模块用到的部分。 */
 interface PromptLocaleHost {
-  register(namespace: string, dicts: { zh: Record<string, string>; en: Record<string, string> }): unknown
+  register(namespace: string, dicts: { zh: Record<string, string>; en: Record<string, string>; ru?: Record<string, string> }): unknown
   bind(namespace: string): Translate
 }
 
 /** apply 时绑定的翻译函数（跟随 DSH 当前语言）。 */
-let bound: Translate | undefined
-
-/** 面板文案函数：applyPrompt 之前回落到中文表（面板不会因缺少 locale 服务变空白）。 */
+/**
+ * 面板文案函数：这个 fork 固定输出俄语（RU 表），与 DSH 当前语言无关；
+ * 键缺失时回落到英文表，再回落到键名本身。
+ */
 export function promptT(): Translate {
-  if (bound !== undefined) return bound
   return (key, params) => {
-    let text = (DICT.zh as Record<string, string>)[key] ?? key
+    let text = (RU as Record<string, string>)[key]
+      ?? (DICT.en as Record<string, string>)[key]
+      ?? key
     if (params !== undefined) {
       for (const name of Object.keys(params)) text = text.split(`{${name}}`).join(String(params[name]))
     }
@@ -38,7 +41,7 @@ export function promptT(): Translate {
 export function applyPrompt(ctx: ClientContext): void {
   const locale = (ctx as unknown as { locale?: PromptLocaleHost }).locale
   if (locale === undefined || typeof locale.bind !== 'function') {
-    console.warn('[dsh-prompt-customizer] prompt locale unavailable: 提示词面板回落中文文案')
+    console.warn('[dsh-prompt-customizer] prompt locale unavailable: панель промптов перейдёт на встроенные китайские тексты')
     return
   }
   // 命名空间是插件自己的（'prompt-customizer'）。注册失败绝不能拖垮整条客户端
@@ -52,9 +55,4 @@ export function applyPrompt(ctx: ClientContext): void {
       return () => {}
     }
   }, 'prompt-customizer: prompt locale')
-  try {
-    bound = locale.bind(NS)
-  } catch (error) {
-    console.warn('[dsh-prompt-customizer] prompt locale bind failed, 回落中文文案:', error)
-  }
 }

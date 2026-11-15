@@ -554,7 +554,7 @@ export function SkillsPanel({ onClose, closing = false, anchor = null, onCardMou
       pushToast('ok', skillT('assignOk', { name: skill.name }))
       refresh()
     } catch (error) {
-      failToast('归入技能包', error)
+      failToast('добавление в бандл', error)
     }
   }
 
@@ -675,7 +675,7 @@ export function SkillsPanel({ onClose, closing = false, anchor = null, onCardMou
       pushToast('ok', skillT('bundleCreated', { name: created }))
       refresh()
     } catch (error) {
-      failToast('新建技能包', error)
+      failToast('создание бандла', error)
     } finally {
       setCreatingBundle(false)
     }
@@ -698,7 +698,7 @@ export function SkillsPanel({ onClose, closing = false, anchor = null, onCardMou
       setCatTarget(null)
       refresh()
     } catch (error) {
-      failToast('设置分类', error)
+      failToast('настройка категорий', error)
     } finally {
       setSavingCats(false)
     }
@@ -719,7 +719,7 @@ export function SkillsPanel({ onClose, closing = false, anchor = null, onCardMou
       setRenameTarget(null)
       refresh()
     } catch (error) {
-      failToast('重命名技能包', error)
+      failToast('переименование бандла', error)
     } finally {
       setRenaming(false)
     }
@@ -739,7 +739,7 @@ export function SkillsPanel({ onClose, closing = false, anchor = null, onCardMou
       refresh()
     } catch (error) {
       // 旧实现把失败写进只在安装弹窗里渲染的 installError：删除失败时面板上毫无反应。
-      failToast(confirm.kind === 'bundle' ? '删除技能包' : '删除技能', error)
+      failToast(confirm.kind === 'bundle' ? 'удаление бандла' : 'удаление скилла', error)
     } finally {
       setConfirming(false)
     }
@@ -754,7 +754,7 @@ export function SkillsPanel({ onClose, closing = false, anchor = null, onCardMou
       pushToast('ok', skillT('removedOk', { name }))
       refresh()
     } catch (error) {
-      failToast('移出技能包', error)
+      failToast('удаление из бандла', error)
     }
   }
 
@@ -769,7 +769,7 @@ export function SkillsPanel({ onClose, closing = false, anchor = null, onCardMou
       pushToast('ok', skillT('pruned'))
       refresh()
     } catch (error) {
-      failToast('清理失效引用', error)
+      failToast('очистка битых ссылок', error)
     }
   }
 

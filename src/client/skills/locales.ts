@@ -2,6 +2,7 @@
  * skills/locales — 面板文案表（SKILL 与 MCP 共用）与插值函数 skillT。
  */
 /** ---------------------------------------------------------------- 文案与参数 */
+import { SKILL_RU } from './locales.ru.ts'
 
 export const SKILL_ZH: Record<string, string> = {
   panelTitle: '能力管理', close: '关闭', loading: '正在读取技能…',
@@ -200,7 +201,7 @@ export const SKILL_ZH: Record<string, string> = {
 }
 
 export function skillT(key: string, params?: Record<string, string | number>): string {
-  let text = SKILL_ZH[key] ?? key
+  let text = SKILL_RU[key] ?? SKILL_ZH[key] ?? key
   if (params) {
     for (const k of Object.keys(params)) text = text.split(`{${k}}`).join(String(params[k]))
   }

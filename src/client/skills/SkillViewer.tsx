@@ -12,7 +12,7 @@ import type { ViewerState } from './types.js'
 export const VIEWER_FONT_SIZES = [13.5, 15, 17]
 export const VIEWER_PREF_KEY = 'dsh.triad.skillViewer'
 /** 三档字号的悬浮文案（与 VIEWER_FONT_SIZES 一一对应）。 */
-export const VIEWER_FONT_LABELS = ['小字号', '标准字号', '大字号']
+export const VIEWER_FONT_LABELS = ['Мелкий шрифт', 'Стандартный шрифт', 'Крупный шрифт']
 
 export interface ViewerPrefs { font: number; full: boolean }
 

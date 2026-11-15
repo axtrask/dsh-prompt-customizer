@@ -37,7 +37,7 @@ export function PanelHead({ t, kind, onKind, level, onLevel, workspaces, workspa
   return (
       <div className="psh-head">
         <span className="psh-title" style={{ flex: 'none' }}>{t('panelTitle')}</span>
-        <div className={css.kindTabs} role="tablist" aria-label="SKILL / MCP / 提示词">
+        <div className={css.kindTabs} role="tablist" aria-label="SKILL / MCP / Промпты">
           {([
             ['skill', t('kindSkill')],
             ['mcp', t('kindMcp')],

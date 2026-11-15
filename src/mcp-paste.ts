@@ -92,7 +92,7 @@ function toScalar(value: unknown, warnings: string[], label: string): Scalar | u
   if (typeof value === 'string') return value
   if (isJsExpr(value)) return value
   if (typeof value === 'number' || typeof value === 'boolean') {
-    warnings.push(`${label}: ${typeof value} 值已转为字符串 "${String(value)}"`)
+    warnings.push(`${label}: значение ${typeof value} преобразовано в строку "${String(value)}"`)
     return String(value)
   }
   return undefined
@@ -105,7 +105,7 @@ function toScalarArray(value: unknown, warnings: string[], label: string): Scala
   for (const item of value) {
     const scalar = toScalar(item, warnings, label)
     if (scalar === undefined) {
-      warnings.push(`${label}: 忽略非标量项（${Array.isArray(item) ? 'array' : typeof item}）`)
+      warnings.push(`${label}: пропущен нескалярный элемент (${Array.isArray(item) ? 'array' : typeof item})`)
       continue
     }
     out.push(scalar)
@@ -120,7 +120,7 @@ function toScalarDict(value: unknown, warnings: string[], label: string): Record
   for (const [key, item] of Object.entries(value)) {
     const scalar = toScalar(item, warnings, label)
     if (scalar === undefined) {
-      warnings.push(`${label}.${key}: 忽略非标量值（${Array.isArray(item) ? 'array' : typeof item}）`)
+      warnings.push(`${label}.${key}: пропущено нескалярное значение (${Array.isArray(item) ? 'array' : typeof item})`)
       continue
     }
     out[key] = scalar
@@ -141,9 +141,9 @@ export function summaryOf(config: McpServerConfig): string {
 /** 解析单个 server 配置；失败返回错误文案。 */
 function parseServer(name: string, value: unknown, warnings: string[]): McpServerConfig | { error: string } {
   if (!SERVER_NAME_PATTERN.test(name)) {
-    return { error: `server "${name}": serverName 需匹配 [A-Za-z0-9_-]{1,32}` }
+    return { error: `server "${name}": serverName должен соответствовать [A-Za-z0-9_-]{1,32}` }
   }
-  if (!isPlainObject(value)) return { error: `server "${name}": 配置需为对象` }
+  if (!isPlainObject(value)) return { error: `server "${name}": конфигурация должна быть объектом` }
   const cfg = value as Record<string, unknown>
   const explicit = String(cfg.type ?? cfg.transport ?? '').toLowerCase()
   const command = toScalar(cfg.command, warnings, `server "${name}".command`)
@@ -154,13 +154,13 @@ function parseServer(name: string, value: unknown, warnings: string[]): McpServe
   else if (command !== undefined) transport = 'stdio'
   else if (url !== undefined) transport = 'streamable-http'
   if (transport === undefined) {
-    return { error: `server "${name}": 无法推断传输方式（stdio 需要 command，http 需要 url；可用 transport 显式声明）` }
+    return { error: `server "${name}": не удалось определить транспорт (для stdio нужен command, для http — url; можно явно указать transport)` }
   }
   const toolCallTimeoutMs = typeof cfg.toolCallTimeoutMs === 'number' && Number.isFinite(cfg.toolCallTimeoutMs)
     ? cfg.toolCallTimeoutMs
     : undefined
   if (transport === 'stdio') {
-    if (command === undefined) return { error: `server "${name}": stdio 需要 command` }
+    if (command === undefined) return { error: `server "${name}": для stdio нужен command` }
     const label = `server "${name}"`
     return {
       serverName: name,
@@ -172,7 +172,7 @@ function parseServer(name: string, value: unknown, warnings: string[]): McpServe
       toolCallTimeoutMs,
     }
   }
-  if (url === undefined) return { error: `server "${name}": http 需要 url` }
+  if (url === undefined) return { error: `server "${name}": для http нужен url` }
   return {
     serverName: name,
     transport,
@@ -205,16 +205,16 @@ export function serversToRows(servers: McpServers): McpRowConfig[] {
 /** 一行插件行对象 → 校验后的 McpRowConfig（YAML 行写法的入口）。 */
 function parseRow(raw: unknown, warnings: string[], errors: string[]): McpRowConfig | undefined {
   if (!isPlainObject(raw)) {
-    errors.push('行片段：每一项需为对象（- id: ... / name: ... / config: ...）')
+    errors.push('Фрагмент строки: каждый элемент должен быть объектом (- id: ... / name: ... / config: ...)')
     return undefined
   }
   const name = typeof raw.name === 'string' ? raw.name : ''
   if (name !== MCP_CLIENT_NAME) {
-    errors.push(`行片段：只接受 name: '${MCP_CLIENT_NAME}' 的行（收到 ${name === '' ? '(缺 name)' : `"${name}"`}）`)
+    errors.push(`Фрагмент строки: принимаются только строки с name: '${MCP_CLIENT_NAME}' (получено ${name === '' ? '(нет name)' : `"${name}"`})`)
     return undefined
   }
   if (!isPlainObject(raw.config)) {
-    errors.push('行片段：缺少 config 对象')
+    errors.push('Фрагмент строки: отсутствует объект config')
     return undefined
   }
   const shape = parseServer(
@@ -240,7 +240,7 @@ function rowsOf(raw: unknown, warnings: string[], errors: string[]): McpRowConfi
     const rows: McpRowConfig[] = []
     for (const entry of raw) {
       if (!isPlainObject(entry)) {
-        errors.push('顶层数组：每一项需为 mcp-client 行或 `- insert:` 片段')
+        errors.push('Массив верхнего уровня: каждый элемент должен быть строкой mcp-client или фрагментом `- insert:`')
         continue
       }
       // patch 片段：- insert: [rows]
@@ -269,7 +269,7 @@ function rowsOf(raw: unknown, warnings: string[], errors: string[]): McpRowConfi
     }
     return serversToRows(servers)
   }
-  errors.push('期望 JSON/YAML 对象（mcpServers 映射）或 mcp-client 行数组')
+  errors.push('Ожидается объект JSON/YAML (отображение mcpServers) или массив строк mcp-client')
   return []
 }
 
@@ -289,18 +289,18 @@ export function parseMcpPaste(format: PasteFormat, text: string): PasteOutcome {
     try {
       raw = JSON.parse(text) as unknown
     } catch (error) {
-      return { servers: [], rows: [], errors: [`JSON 解析失败: ${error instanceof Error ? error.message : String(error)}`], warnings }
+      return { servers: [], rows: [], errors: [`Ошибка разбора JSON: ${error instanceof Error ? error.message : String(error)}`], warnings }
     }
   } else {
     try {
       raw = load(text, { schema: MCP_SCHEMA }) as unknown
     } catch (error) {
       const mark = (error as { mark?: { line?: number } } | null)?.mark
-      const at = typeof mark?.line === 'number' ? `（第 ${mark.line + 1} 行）` : ''
+      const at = typeof mark?.line === 'number' ? ` (строка ${mark.line + 1})` : ''
       return {
         servers: [],
         rows: [],
-        errors: [`YAML 解析失败${at}: ${error instanceof Error ? error.message.split('\n')[0] : String(error)}`],
+        errors: [`Ошибка разбора YAML${at}: ${error instanceof Error ? error.message.split('\n')[0] : String(error)}`],
         warnings,
       }
     }
